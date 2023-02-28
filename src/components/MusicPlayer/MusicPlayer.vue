@@ -7,10 +7,9 @@
         <PlayCircleOutlined @click="isPlayingToggle" v-show="!playerState.isPlaying" class="ctrl-icon"/>
         <StepForwardOutlined class="ctrl-icon"/>
         <div class="slider-box">
-          <img alt="唱片" style="height: 30px;width: 30px" src="~assets/image/R-C.png">
-
+          <img alt="唱片" id="music-photo" src="~assets/image/R-C.png">
           <a-slider
-              @afterChange="changePlayerProgress"
+              @change="changePlayerProgress"
               id="music-slider" v-model:value="playerState.currentTime" :min="0" :max="playerState.maxTime"
               :tip-formatter="()=>realFormatSecond(playerState.currentTime)"/>
           <span id="progress-text">{{ realFormatSecond(playerState.currentTime) }}/
@@ -19,7 +18,9 @@
           <text id="music-title">{{ MusicPlayerStore.getCurrentMusic ? MusicPlayerStore.getCurrentMusic.name : "--" }}
           </text>
         </div>
-
+        <a-badge :number-style="{ backgroundColor: '#52c41a' }" :count="MusicPlayerStore.musicList.length">
+          <UnorderedListOutlined @click="showMusicQueue" id="list-icon" class="ctrl-icon"/>
+        </a-badge>
       </div>
       <div class="lock-wrapper">
         <LockOutlined @click="isLockToggle" v-if="barState.isLock" class="lock-icon"/>
@@ -30,10 +31,11 @@
            @loadedmetadata="onLoadedmetadata"
            @timeupdate="onTimeupdate"
            @pause="onPause"
-           @play="onPlay" controls="controls" style="display: none" id="music-player" autoplay
+           @play="onPlay" controls="true" style="display: none" id="music-player" autoplay
            :src="MusicPlayerStore.getCurrentMusic?MusicPlayerStore.getCurrentMusic.url:''">
       Your browser does not support the audio element.
     </audio>
+    <MusicQueue @close="barState.isMusicQueueShow=false" v-show="barState.isMusicQueueShow"/>
   </div>
 </template>
 
@@ -46,14 +48,17 @@ import {
   PlayCircleOutlined,
   StepBackwardOutlined,
   StepForwardOutlined,
-  UnlockOutlined
+  UnlockOutlined,
+  UnorderedListOutlined
 } from '@ant-design/icons-vue';
+import MusicQueue from "@/components/MusicPlayer/MusicQueue.vue";
 
 
 const MusicPlayerStore = useMusicPlayerStore();
 const audio = ref()
 const barState = reactive({
   isWrapperShow: false,
+  isMusicQueueShow: false,
   isLock: false
 })
 const playerState = reactive({
@@ -64,6 +69,10 @@ const playerState = reactive({
   // 音频最大播放时长
   maxTime: 0
 })
+
+function showMusicQueue() {
+  barState.isMusicQueueShow = true
+}
 
 function changePlayerProgress(time: any) {
   audio.value.currentTime = time
@@ -78,15 +87,6 @@ function onLoadedmetadata(res: any) {
   playerState.maxTime = parseInt(res.target.duration)
 }
 
-function showBarInSeconds(seconds: number) {
-  if (barState.isWrapperShow === false) {
-    barState.isWrapperShow = true;
-    setTimeout(() => {
-      barState.isWrapperShow = false;
-    }, seconds * 1000)
-  }
-}
-
 function onPlay() {
   playerState.isPlaying = true
   showBarInSeconds(5)
@@ -94,6 +94,16 @@ function onPlay() {
 
 function onPause() {
   playerState.isPlaying = false
+}
+
+
+function showBarInSeconds(seconds: number) {
+  if (barState.isWrapperShow === false) {
+    barState.isWrapperShow = true;
+    setTimeout(() => {
+      barState.isWrapperShow = false;
+    }, seconds * 1000)
+  }
 }
 
 //播放暂停状态切换
@@ -106,7 +116,7 @@ function isPlayingToggle() {
 }
 
 function onMouseLeave() {
-  if (barState.isLock === false) {
+  if (barState.isLock === false && barState.isMusicQueueShow === false) {
     barState.isWrapperShow = false
   }
 }
@@ -118,6 +128,11 @@ function onMouseEnter() {
 function isLockToggle() {
   barState.isLock = !barState.isLock
 }
+
+MusicPlayerStore.$subscribe((mutation, state) => {
+  // 每当状态发生变化时，将整个 state 持久化到本地存储。
+  localStorage.setItem('MusicPlayerStore', JSON.stringify(state))
+})
 
 // 将整数转换成 时：分：秒的格式
 function realFormatSecond(second: number) {
@@ -131,6 +146,13 @@ function realFormatSecond(second: number) {
 </script>
 
 <style scoped>
+
+#music-photo {
+  height: 30px;
+  width: 30px;
+  margin: 0 10px;
+}
+
 #progress-text {
   font-size: 5px;
   padding-top: 11px;
@@ -143,7 +165,7 @@ function realFormatSecond(second: number) {
   top: -4px;
   font-size: 5px;
   color: #f8f8f8;
-  left: 36px;
+  left: 56px;
 }
 
 .slider-box {
@@ -167,7 +189,7 @@ function realFormatSecond(second: number) {
 .music-controller {
   display: flex;
   align-items: center;
-  width: 500px;
+  width: 750px;
   height: 53px;
   margin: auto;
 }

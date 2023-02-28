@@ -1,36 +1,9 @@
-<script setup lang="ts">
-import {getTopArtists} from "@/api/home/home"
-import {onMounted, reactive} from "vue";
-import {useRouter} from "vue-router";
-
-const router = useRouter()
-const state = reactive({
-  artistList: [],
-  hotArtistsLoading: true
-})
-
-function gotoArtist(artist: any) {
-  router.push(`/artist/${artist.id}`)
-}
-
-onMounted(() => {
-
-  getTopArtists(0, 10).then((res: any) => {
-    state.artistList = res.artists
-    state.hotArtistsLoading = false
-  })
-})
-</script>
-
 <template>
   <main>
     <a-card :loading="state.hotArtistsLoading" title="热门歌手">
       <div class="avatar-layout">
-        <div class="avatar-wrapper" v-for="artist in state.artistList" :key="artist.picId">
-          <a-avatar class="avatar-item" shape="square" :size="120"
-                    :src="artist.picUrl"
-                    @click="gotoArtist(artist)"
-          >
+        <div class="avatar-wrapper" v-for="artist in artistList" :key="artist.picId">
+          <a-avatar class="avatar-item" shape="square" :size="120" :src="artist.picUrl" @click="gotoArtist(artist)">
           </a-avatar>
           <span @click="gotoArtist(artist)">{{ artist.name }}</span>
         </div>
@@ -41,6 +14,36 @@ onMounted(() => {
     </a-card>
   </main>
 </template>
+<script setup lang="ts">
+import {getTopArtists} from "@/api/home/home"
+import {onMounted, reactive} from "vue";
+import {useRouter} from "vue-router";
+
+const router = useRouter()
+const state = reactive({
+  hotArtistsLoading: true
+})
+
+interface ArtistProps {
+  picId: number,
+  picUrl: string,
+  name: string
+}
+
+let artistList = reactive<Array<ArtistProps>>([]);
+
+function gotoArtist(artist: any) {
+  router.push(`/artist/${artist.id}`)
+}
+
+onMounted(() => {
+  getTopArtists(0, 10).then((res: any) => {
+    artistList = res.artists
+    state.hotArtistsLoading = false
+  })
+})
+</script>
+
 <style scoped>
 
 .avatar-layout {

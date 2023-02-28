@@ -2,7 +2,7 @@
 
 本前端项目是基于Vue3.0+Tyscript开发，使用vite作为构建工具搭建项目。是一个模仿网易云音乐的网站。
 
-后端是基于NeteaseCloudMusicApi(https://github.com/Binaryify/NeteaseCloudMusicApi)项目
+后端是基于网易云音乐 API(https://github.com/Binaryify/NeteaseCloudMusicApi)项目
 
 ## Project Setup
 

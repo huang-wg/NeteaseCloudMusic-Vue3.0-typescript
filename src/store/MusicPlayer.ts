@@ -33,6 +33,14 @@ export const useMusicPlayerStore = defineStore('MusicPlayer', () => {
     }
 
     /**
+     * 播放指定歌曲
+     * @param index 歌曲的索引
+     */
+    function playMusicByIndex(index: number) {
+        currentIndex.value = index
+    }
+
+    /**
      * 播放队列中增加需要播放的音乐
      * @param musics
      */
@@ -40,5 +48,5 @@ export const useMusicPlayerStore = defineStore('MusicPlayer', () => {
 
     }
 
-    return { musicList, playAndAddOneSong, addMusicsIntoList, getCurrentMusic}
+    return {musicList, playAndAddOneSong, addMusicsIntoList, getCurrentMusic, playMusicByIndex}
 })

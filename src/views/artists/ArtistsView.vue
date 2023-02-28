@@ -6,7 +6,6 @@ import MusicList from "@/components/MusicList/MusicList.vue";
 
 
 const route = useRoute()
-
 const state = reactive({
   artistLoading: true,
   artist: {},
@@ -28,11 +27,11 @@ onMounted(() => {
 </script>
 <template>
   <main>
-    <a-card :loading="state.artistLoading" :title="state.artist.name||''">
+    <a-card :loading="state.artistLoading" :title="state.artist['name']||''">
       <a-image
           :preview="false"
           height="300px"
-          :src="state.artist.cover+'?param=800y300'"
+          :src="state.artist['cover']+'?param=800y300'"
       />
       <a-tabs v-model:activeKey="state.tabKey" centered>
         <a-tab-pane key="1" tab="热门作品">
@@ -40,7 +39,7 @@ onMounted(() => {
         </a-tab-pane>
         <a-tab-pane key="2" tab="所有专辑">Todo</a-tab-pane>
         <a-tab-pane key="3" tab="相关MV">Todo</a-tab-pane>
-        <a-tab-pane key="4" tab="艺人介绍">{{ state.artist.briefDesc }}</a-tab-pane>
+        <a-tab-pane key="4" tab="艺人介绍">{{ state.artist['briefDesc'] || "" }}</a-tab-pane>
       </a-tabs>
 
     </a-card>
