@@ -1,11 +1,10 @@
 import {defineStore} from 'pinia'
 import {computed, reactive, ref} from "vue";
 
-interface Music {
+export interface Music {
     id: number,
     name: string,
     url: string
-
 }
 
 /**
@@ -41,12 +40,49 @@ export const useMusicPlayerStore = defineStore('MusicPlayer', () => {
     }
 
     /**
-     * 播放队列中增加需要播放的音乐
-     * @param musics
+     * 播放下一首音乐
      */
-    function addMusicsIntoList(musics: Array<Music>) {
-
+    function playNextMusic() {
+        if (currentIndex.value + 1 < musicList.length) {
+            currentIndex.value += 1
+        }
     }
 
-    return {musicList, playAndAddOneSong, addMusicsIntoList, getCurrentMusic, playMusicByIndex}
+    /**
+     * 播放上一首音乐
+     */
+    function playLastMusic() {
+        if (currentIndex.value - 1 >= 0) {
+            currentIndex.value -= 1
+        }
+    }
+
+    /**
+     * 将音乐加入到队列中
+     * @param musics
+     */
+    function pushMusicsIntoList(musics: Array<Music>) {
+        musicList.push(...musics);
+    }
+
+    /**
+     * 用新的音乐队列替换原队列
+     * @param musics
+     */
+    function replaceMusicList(musics: Array<Music>) {
+        musicList.splice(0, musicList.length);
+        musicList.push(...musics)
+        currentIndex.value = 0
+    }
+
+    return {
+        playNextMusic,
+        playLastMusic,
+        musicList,
+        playAndAddOneSong,
+        pushMusicsIntoList,
+        replaceMusicList,
+        getCurrentMusic,
+        playMusicByIndex
+    }
 })

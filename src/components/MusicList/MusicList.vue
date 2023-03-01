@@ -9,13 +9,13 @@
     </template>
     <template #header>
       <div>
-        <a-button type="primary">
+        <a-button type="primary" @click="replaceMusicList">
           <template #icon>
             <PlayCircleOutlined/>
           </template>
           播放
         </a-button>
-        <a-button style="margin-left: 10px" type="primary">
+        <a-button style="margin-left: 10px" type="primary" @click="pushMusicList">
           <template #icon>
             <PlusOutlined/>
           </template>
@@ -31,10 +31,35 @@
  * 展示多首音乐，并且能加入到播放队列中
  */
 import {PlayCircleOutlined, PlusOutlined} from "@ant-design/icons-vue";
+import type {Music} from "@/store/MusicPlayer";
 import {useMusicPlayerStore} from "@/store/MusicPlayer"
 import {getMusicUrl} from "@/api/music";
 
 const musicPlayerStore = useMusicPlayerStore();
+
+async function getManyMusicParams(){
+  let musicIds = props.musicList.map((item: any) => item.id).join(",")
+
+  let res=await getMusicUrl(musicIds)
+  let musicList: Array<Music> = res.data.map((item, index) => {
+    return {
+      id: props.musicList[index]['id'],
+      name: props.musicList[index]['name'],
+      url: item.url
+    }
+  })
+  return musicList;
+}
+function pushMusicList(){
+  getManyMusicParams().then(res=>{
+    musicPlayerStore.pushMusicsIntoList(res)
+  })
+}
+function replaceMusicList() {
+  getManyMusicParams().then(res=>{
+    musicPlayerStore.replaceMusicList(res)
+  })
+}
 
 const props = defineProps({
   musicList: Array

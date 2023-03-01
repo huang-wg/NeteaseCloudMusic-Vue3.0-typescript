@@ -2,10 +2,10 @@
   <div class="playbar" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave ">
     <div :class="{'playbar-wrapper':true,'wrapper-show':barState.isWrapperShow}">
       <div class="music-controller">
-        <StepBackwardOutlined class="ctrl-icon"/>
+        <StepBackwardOutlined @click="MusicPlayerStore.playLastMusic()" class="ctrl-icon"/>
         <PauseCircleOutlined @click="isPlayingToggle" v-show="playerState.isPlaying" class="ctrl-icon"/>
         <PlayCircleOutlined @click="isPlayingToggle" v-show="!playerState.isPlaying" class="ctrl-icon"/>
-        <StepForwardOutlined class="ctrl-icon"/>
+        <StepForwardOutlined @click="MusicPlayerStore.playNextMusic()" class="ctrl-icon"/>
         <div class="slider-box">
           <img alt="唱片" id="music-photo" src="~assets/image/R-C.png">
           <a-slider
@@ -59,7 +59,7 @@ const audio = ref()
 const barState = reactive({
   isWrapperShow: false,
   isMusicQueueShow: false,
-  isLock: false
+  isLock: true
 })
 const playerState = reactive({
   //是否播放中
@@ -101,7 +101,9 @@ function showBarInSeconds(seconds: number) {
   if (barState.isWrapperShow === false) {
     barState.isWrapperShow = true;
     setTimeout(() => {
-      barState.isWrapperShow = false;
+      if (barState.isMusicQueueShow === false && barState.isLock === false) {
+        barState.isWrapperShow = false;
+      }
     }, seconds * 1000)
   }
 }
