@@ -22,3 +22,25 @@ export function getTopArtists(offset: number, limit: number) {
         method: 'post'
     })
 }
+
+/**
+ * 所获取有榜单
+ */
+export function getTopList() {
+    return http.request({
+        url: `/toplist`,
+        method: 'post'
+    })
+}
+
+/**
+ * 获取歌单详情,(榜单也是一种歌单)
+ * @param id
+ */
+export function getPlaylistDetail(id: number) {
+    return http.request({
+        url: `/playlist/detail`,
+        params: {id},
+        method: 'post'
+    })
+}

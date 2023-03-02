@@ -11,13 +11,17 @@
       </div>
     </a-card>
     <a-card title="榜单">
+      <a-card-grid v-for="(item,index) in topData" :key="index" style="width: 33%; text-align: center">
+        <TopMusicList :top-data="item"/>
+      </a-card-grid>
     </a-card>
   </main>
 </template>
 <script setup lang="ts">
-import {getTopArtists} from "@/api/home/home"
+import {getPlaylistDetail, getTopArtists, getTopList} from "@/api/home/home"
 import {onMounted, reactive} from "vue";
 import {useRouter} from "vue-router";
+import TopMusicList from "@/views/home/TopMusicList.vue";
 
 const router = useRouter()
 const state = reactive({
@@ -36,10 +40,31 @@ function gotoArtist(artist: any) {
   router.push(`/artist/${artist.id}`)
 }
 
+const topData = reactive([]);
+
+function get10SongTopData(item) {
+  return {
+    name: item.playlist.name,
+    cover: item.playlist.coverImgUrl,
+    musics: item.playlist.tracks.slice(0, 11)
+  }
+}
+
 onMounted(() => {
   getTopArtists(0, 10).then((res: any) => {
     artistList = res.artists
     state.hotArtistsLoading = false
+  })
+
+  getTopList().then((res: any) => {
+    let headThree = res.list.slice(0, 3);
+    Promise.all([getPlaylistDetail(headThree[0]['id']),
+      getPlaylistDetail(headThree[1]['id']),
+      getPlaylistDetail(headThree[2]['id'])]).then((res: any) => {
+      res.forEach((item: any) => {
+        topData.push(get10SongTopData(item));
+      })
+    })
   })
 })
 </script>
@@ -78,7 +103,7 @@ onMounted(() => {
 
 .ant-card {
   margin-bottom: 20px;
-  min-width: 1200px;
+  min-width: 1100px;
 }
 
 </style>

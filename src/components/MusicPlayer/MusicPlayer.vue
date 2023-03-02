@@ -232,5 +232,6 @@ function realFormatSecond(second: number) {
   bottom: 0;
   width: 100%;
   height: 53px;
+  z-index: 10;
 }
 </style>

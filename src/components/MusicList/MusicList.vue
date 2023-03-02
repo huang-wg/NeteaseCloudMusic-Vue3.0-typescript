@@ -2,8 +2,8 @@
   <a-list size="small" bordered :data-source="props.musicList">
     <template #renderItem="{ item,index }">
       <a-list-item>
-        <span id="music-index">{{ index + 1 }}</span>
-        <PlayCircleOutlined id="play-one-btn" @click="playOneMusic(item)"/>
+        <span class="music-index">{{ index + 1 }}</span>
+        <PlayCircleOutlined class="play-one-btn" @click="playOneMusic(item)"/>
         {{ item.name }}
       </a-list-item>
     </template>
@@ -37,10 +37,10 @@ import {getMusicUrl} from "@/api/music";
 
 const musicPlayerStore = useMusicPlayerStore();
 
-async function getManyMusicParams(){
+async function getManyMusicParams() {
   let musicIds = props.musicList.map((item: any) => item.id).join(",")
 
-  let res=await getMusicUrl(musicIds)
+  let res = await getMusicUrl(musicIds)
   let musicList: Array<Music> = res.data.map((item, index) => {
     return {
       id: props.musicList[index]['id'],
@@ -50,13 +50,15 @@ async function getManyMusicParams(){
   })
   return musicList;
 }
-function pushMusicList(){
-  getManyMusicParams().then(res=>{
+
+function pushMusicList() {
+  getManyMusicParams().then(res => {
     musicPlayerStore.pushMusicsIntoList(res)
   })
 }
+
 function replaceMusicList() {
-  getManyMusicParams().then(res=>{
+  getManyMusicParams().then(res => {
     musicPlayerStore.replaceMusicList(res)
   })
 }
@@ -78,20 +80,24 @@ function playOneMusic(music: any) {
 </script>
 
 <style scoped>
-#play-one-btn {
+.play-one-btn {
   font-size: 18px;
   color: grey;
   margin-right: 20px;
   cursor: pointer;
 }
 
-#play-one-btn:hover {
+.play-one-btn:hover {
   color: black;
 }
 
-#music-index {
+.music-index {
   display: inline-block;
   width: 20px;
   margin-right: 20px;
+}
+
+:deep(.ant-list-item) {
+  text-align: left;
 }
 </style>
