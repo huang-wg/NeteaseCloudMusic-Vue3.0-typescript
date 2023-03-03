@@ -11,3 +11,26 @@ export function getMusicUrl(id: string | number) {
         method: 'post'
     })
 }
+
+/**
+ * 获取歌曲详情
+ * @param id 歌曲id
+ */
+export function getMusicDetail(ids: string | number) {
+    return http.request({
+        url: `/song/detail`,
+        params: {ids},
+        method: 'post'
+    })
+}
+/**
+ * 获取歌曲详情
+ * @param id 歌曲id
+ */
+export function getMusicLyric(id: string | number) {
+    return http.request({
+        url: `/lyric`,
+        params: {id},
+        method: 'post'
+    })
+}

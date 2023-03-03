@@ -11,7 +11,7 @@
       </div>
     </a-card>
     <a-card title="榜单">
-      <a-card-grid v-for="(item,index) in topData" :key="index" style="width: 33%; text-align: center">
+      <a-card-grid v-for="(item,index) in topData" :key="index" style="width: 33.3%; text-align: center">
         <TopMusicList :top-data="item"/>
       </a-card-grid>
     </a-card>

@@ -9,7 +9,7 @@
 import MusicList from "@/components/MusicList/MusicList.vue";
 
 const props = defineProps({
-  topData: Array
+  topData: Object
 })
 
 </script>

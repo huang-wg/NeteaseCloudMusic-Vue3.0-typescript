@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 import {computed, reactive, ref} from "vue";
-
+import { message } from 'ant-design-vue';
 export interface Music {
     id: number,
     name: string,
@@ -62,7 +62,17 @@ export const useMusicPlayerStore = defineStore('MusicPlayer', () => {
      * @param musics
      */
     function pushMusicsIntoList(musics: Array<Music>) {
-        musicList.push(...musics);
+        //队列歌曲去重
+        const distinctList = musics.filter((music) => {
+            const index = musicList.findIndex(item => {
+                return item.id === music.id
+            })
+            return index === -1
+        })
+        if(musics.length!==distinctList.length){
+            message.info('歌曲已存在播放队列中！');
+        }
+        musicList.push(...distinctList);
     }
 
     /**

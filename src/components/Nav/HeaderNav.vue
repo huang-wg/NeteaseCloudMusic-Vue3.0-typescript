@@ -1,7 +1,7 @@
 <template>
   <a-menu theme="dark" mode="horizontal" :selectedKeys="state.current" @click="gotoPage">
-    <a-menu-item key="/">
-      发现音乐
+    <a-menu-item v-for="(route) in routerConfig" :key="route.url">
+      {{ route.name }}
     </a-menu-item>
     <a-menu-item key="/about">
       我的音乐
@@ -16,6 +16,13 @@
 import {useRoute, useRouter} from "vue-router";
 import {reactive, watch} from "vue";
 
+const routerConfig = [{
+  name: "发现音乐",
+  url: "/"
+}, {
+  name: "最热歌单",
+  url: "/playlist"
+}]
 const router = useRouter()
 const route = useRoute()
 const state = reactive({

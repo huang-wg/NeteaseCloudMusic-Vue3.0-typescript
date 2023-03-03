@@ -28,6 +28,7 @@
       </div>
     </div>
     <audio ref="audio"
+           @ended="MusicPlayerStore.playNextMusic()"
            @loadedmetadata="onLoadedmetadata"
            @timeupdate="onTimeupdate"
            @pause="onPause"

@@ -4,7 +4,7 @@
       <a-list-item>
         <span class="music-index">{{ index + 1 }}</span>
         <PlayCircleOutlined class="play-one-btn" @click="playOneMusic(item)"/>
-        {{ item.name }}
+        <span class="music-name" @click="gotoSongDetail(item)">{{ item.name }}</span>
       </a-list-item>
     </template>
     <template #header>
@@ -34,8 +34,14 @@ import {PlayCircleOutlined, PlusOutlined} from "@ant-design/icons-vue";
 import type {Music} from "@/store/MusicPlayer";
 import {useMusicPlayerStore} from "@/store/MusicPlayer"
 import {getMusicUrl} from "@/api/music";
+import {useRouter} from "vue-router";
 
 const musicPlayerStore = useMusicPlayerStore();
+const router = useRouter()
+
+function gotoSongDetail(song) {
+  router.push(`/song/${song.id}`)
+}
 
 async function getManyMusicParams() {
   let musicIds = props.musicList.map((item: any) => item.id).join(",")
@@ -80,6 +86,13 @@ function playOneMusic(music: any) {
 </script>
 
 <style scoped>
+.music-name{
+  cursor: pointer;
+}
+.music-name:hover {
+  text-decoration: underline
+}
+
 .play-one-btn {
   font-size: 18px;
   color: grey;
@@ -99,5 +112,6 @@ function playOneMusic(music: any) {
 
 :deep(.ant-list-item) {
   text-align: left;
+  justify-content: flex-start;
 }
 </style>
